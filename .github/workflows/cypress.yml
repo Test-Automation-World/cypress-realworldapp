@@ -59,7 +59,7 @@ jobs:
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
         with:
-          command: npm run cy:run -- --env grepTags="${{ github.event.inputs.TAGS }}"
+          command: npm run cy:run -- --env grepTags=${{ github.event.inputs.TAGS }}
 
       - name: Archive test report
         if: always()
