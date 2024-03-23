@@ -4,7 +4,7 @@ import FavoritesApi from "../api-utils/favorites-api";
 import UserDetailsPage from "../page-objects/user-details-page";
 import GlobalFeedPage from "../page-objects/global-feed-page";
 
-describe("Check user detail page", () => {
+describe("Check user detail page", { tags: "@user" }, () => {
   before(() => {
     cy.setJwtTokenAsEnv(Cypress.env("email"), Cypress.env("password"));
   });

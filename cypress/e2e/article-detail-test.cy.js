@@ -9,7 +9,7 @@ import ArticlesApi from "../api-utils/article-api";
 import Utils from "../utils/utils";
 
 const articleIndex = 0;
-describe("Checking article detail page", () => {
+describe("Checking article detail page", { tags: "@articles" }, () => {
   before(() => {
     cy.setJwtTokenAsEnv(Cypress.env("email"), Cypress.env("password"));
   });
@@ -48,39 +48,47 @@ describe("Checking article detail page", () => {
     });
   });
 
-  context("Test add comment feature", () => {
-    before(() => {
-      Comment.deleteArticleComments(articleIndex);
-    });
-    it("Add a comment to an article", () => {
+  context(
+    "Test add comment feature",
+    { tags: ["@sanity", "@comments"] },
+    () => {
+      before(() => {
+        Comment.deleteArticleComments(articleIndex);
+      });
+      it("Add a comment to an article", () => {
+        const message = faker.lorem.sentence();
+        ArticleDetailPage.sendComment(message);
+        ArticleDetailPage.getCommentText()
+          .invoke("text")
+          .then((text) => {
+            expect(text.trim()).to.equal(message);
+          });
+        ArticleDetailPage.getCommentAuthor()
+          .invoke("text")
+          .then((text) => {
+            expect(text.trim()).to.equal(Cypress.env("username"));
+          });
+      });
+    }
+  );
+
+  context(
+    "Test delete comment feature",
+    { tags: ["@sanity", "@comments"] },
+    () => {
       const message = faker.lorem.sentence();
-      ArticleDetailPage.sendComment(message);
-      ArticleDetailPage.getCommentText()
-        .invoke("text")
-        .then((text) => {
-          expect(text.trim()).to.equal(message);
-        });
-      ArticleDetailPage.getCommentAuthor()
-        .invoke("text")
-        .then((text) => {
-          expect(text.trim()).to.equal(Cypress.env("username"));
-        });
-    });
-  });
+      before(() => {
+        Comment.addCommentToArticle(articleIndex, message);
+      });
+      it("Delete a comment of an article", () => {
+        cy.contains(message).should("exist");
+        ArticleDetailPage.deleteComment(message);
+        cy.contains(message).should("not.exist");
+      });
+    }
+  );
 
-  context("Test delete comment feature", () => {
-    const message = faker.lorem.sentence();
-    before(() => {
-      Comment.addCommentToArticle(articleIndex, message);
-    });
-    it("Delete a comment of an article", () => {
-      cy.contains(message).should("exist");
-      ArticleDetailPage.deleteComment(message);
-      cy.contains(message).should("not.exist");
-    });
-  });
-
-  context("Test delete article feature", () => {
+  context("Test delete article feature", { tags: "@sanity" }, () => {
     it("deletes an existing article", () => {
       let newArticle = Utils.generateNewArticleData(false);
       cy.wait(500);

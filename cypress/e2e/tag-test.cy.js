@@ -4,7 +4,7 @@ import ArticlesApi from "../api-utils/article-api";
 import GlobalFeedPage from "../page-objects/global-feed-page";
 import Utils from "../utils/utils";
 
-describe("Checking the tags", { tags: "@sanity" }, () => {
+describe("Checking the tags", { tags: "@tags" }, () => {
   before(() => {
     cy.setJwtTokenAsEnv(Cypress.env("email"), Cypress.env("password"));
   });

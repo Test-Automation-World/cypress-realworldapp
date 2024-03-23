@@ -2,7 +2,7 @@ import AuthorDetailPage from "../page-objects/author-detail-page";
 import ArticlesApi from "../api-utils/article-api";
 import FollowAuthorButton from "../components/follow-author-button";
 
-describe("Check author page", () => {
+describe("Check author page", { tags: ["@articles", "@author"] }, () => {
   before(() => {
     cy.setJwtTokenAsEnv(Cypress.env("email"), Cypress.env("password"));
   });
@@ -35,7 +35,7 @@ describe("Check author page", () => {
       expect(titles, "Articles titles").to.have.lengthOf(4);
     });
   });
-  it("Follow author", () => {
+  it("Follow author", { tags: "@sanity" }, () => {
     FollowAuthorButton.getFollowAuthorButton().as("followButton").click();
     cy.get("@followButton").should("contain.text", "Unfollow");
     cy.get("@followButton").click();
