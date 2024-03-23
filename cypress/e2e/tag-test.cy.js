@@ -3,9 +3,8 @@ import TagsPage from "../page-objects/tags-page";
 import ArticlesApi from "../api-utils/article-api";
 import GlobalFeedPage from "../page-objects/global-feed-page";
 import Utils from "../utils/utils";
-import { fr } from "@faker-js/faker";
 
-describe("Checking the tags", { tags: "@sanity" }, () => {
+describe("Checking the tags", { tags: "@tags" }, () => {
   before(() => {
     cy.setJwtTokenAsEnv(Cypress.env("email"), Cypress.env("password"));
   });

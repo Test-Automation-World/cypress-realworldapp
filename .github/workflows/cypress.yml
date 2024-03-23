@@ -1,7 +1,23 @@
-name: Run tests
+name: Run Cypress tests
 
 on:
   workflow_dispatch:
+    inputs:
+      TAGS:
+        description: |
+          Tags to filter tests to execute.
+          If no choice is selected, all tests will be executed.
+        required: false
+        type: choice
+        options:
+          - " "
+          - "@sanity"
+          - "@articles"
+          - "@comments"
+          - "@author"
+          - "@tags"
+          - "@user"
+        default: " "
 
 jobs:
   test:
@@ -42,6 +58,8 @@ jobs:
         env:
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
+        with:
+          command: cy:run -- --env grepTags="${{ github.event.inputs.TAGS }}"
 
       - name: Archive test report
         if: always()
