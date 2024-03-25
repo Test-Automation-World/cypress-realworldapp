@@ -9,36 +9,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # run 3 copies of the current job in parallel
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2, 3]
-
     steps:
       - uses: actions/checkout@v3
 
-      # Paso 2: Iniciar contenedores con Docker Compose
-      - name: Iniciar contenedores
+      - name: Init app containers
         run: docker-compose up -d
 
-      # Paso 3: Esperar a que los contenedores estén listos
-      - name: Esperar a que los contenedores estén listos
+      - name: Wait for containers to be ready
         run: |
           wget -O dockerize.tar.gz https://github.com/jwilder/dockerize/releases/download/v0.7.0/dockerize-alpine-linux-amd64-v0.7.0.tar.gz && tar -C /usr/local/bin -xzvf dockerize.tar.gz && rm dockerize.tar.gz
-          dockerize -wait tcp://localhost:3000 -timeout 1m
+          dockerize -wait tcp://localhost:5432 -wait tcp://localhost:3000 -timeout 1m
 
-      # Paso 4: Ejecutar el script de sembrado de datos
-      - name: Ejecutar script de sembrado
+      - name: Seed database
         run: docker-compose exec -T app npm run sqlz -- db:seed:all
 
-      - name: Register cypress user
-        run: |
-          curl -X POST 'http://localhost:3000/api/users' -H 'Content-Type: application/json' -d '{"user": {"username": "cypress-user","email": "cypress@realworld.com","password": "cypress@realworld.com"}}'
-
-      - name: Run e2e cypress tests with cypress-io
-        uses: cypress-io/github-action@v6.5.0
-        # pass the machine index and the total number
-        env:
-          SPLIT: ${{ strategy.job-total }}
-          SPLIT_INDEX: ${{ strategy.job-index }}
+      - name: Run Tests
+        run: docker-compose exec -T app npm test
