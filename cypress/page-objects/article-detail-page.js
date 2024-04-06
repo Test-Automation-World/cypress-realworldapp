@@ -1,62 +1,62 @@
-import ArticlesApi from '../api-utils/article-api'
+import ArticlesApi from "../api-utils/article-api";
 
 // data-testId attributes
-const COMMENT_TEXTAREA = 'comment-textarea'
-const POST_COMMENT_BUTTON = 'post-comment'
-const COMMENT_TEXT = 'comment-content'
-const COMMENT_AUTHOR = 'author-username'
-const DELETE_COMMENT_BUTTON = 'delete-comment'
-const TAG_PILLS = 'article-tag'
-const EDIT_ARTICLE = 'edit-article'
-const DELETE_ARTICLE = 'delete-article'
+const COMMENT_TEXTAREA = "comment-textarea";
+const POST_COMMENT_BUTTON = "post-comment";
+const COMMENT_TEXT = "comment-content";
+const COMMENT_AUTHOR = "author-username";
+const DELETE_COMMENT_BUTTON = "delete-comment";
+const TAG_PILLS = "article-tag";
+const EDIT_ARTICLE = "edit-article";
+const DELETE_ARTICLE = "delete-article";
 
 export default class ArticleDetailPage {
   static visit(articleIndex = 0) {
-    let slug = ''
+    let slug = "";
     ArticlesApi.getArticles()
-      .then(articles => {
-        slug = articles[articleIndex].slug
+      .then((articles) => {
+        slug = articles[articleIndex].slug;
       })
       .then(() => {
-        cy.visit(`/article/${slug}`)
-      })
+        cy.visit(`/article/${slug}`);
+      });
   }
   static sendComment(comment) {
-    cy.getByTestId(COMMENT_TEXTAREA).type(comment)
-    cy.getByTestId(POST_COMMENT_BUTTON).click()
+    cy.getByTestId(COMMENT_TEXTAREA).type(comment);
+    cy.getByTestId(POST_COMMENT_BUTTON).click();
   }
   static getCommentText() {
-    return cy.getByTestId(COMMENT_TEXT)
+    return cy.getByTestId(COMMENT_TEXT);
   }
 
   static getCommentAuthor() {
-    return cy.getByTestId(COMMENT_AUTHOR)
+    return cy.getByTestId(COMMENT_AUTHOR);
   }
 
   static deleteComment(commentText) {
-    // I'm not proud of this, but it's the only way I found to get just the card that contains the comment
-    // when there are multiple comments on the page.
-    cy.contains(commentText.toString()).parent().parent().within(() => {
-      cy.getByTestId(DELETE_COMMENT_BUTTON).click()
-    })
+    cy.getByTestId("comment-card")
+      .filter(`:contains(${commentText})`)
+      .within(() => {
+        cy.getByTestId(DELETE_COMMENT_BUTTON).click();
+      });
   }
 
   static getArticleTags() {
-    return cy.getByTestId(TAG_PILLS).then(tagList => {
-      return tagList.map((_t, e) => e.textContent.trim()).get()
-    })
+    return cy.getByTestId(TAG_PILLS).then((tagList) => {
+      return tagList.map((_t, e) => e.textContent.trim()).get();
+    });
   }
 
   static getArticleBody() {
-    return cy.get('p')
+    return cy.get("p");
   }
 
   static goToEditArticle() {
-    cy.getByTestId(EDIT_ARTICLE).first().click()
-    cy.url().should('include', 'editor')
+    cy.getByTestId(EDIT_ARTICLE).first().click();
+    cy.url().should("include", "editor");
   }
 
   static deleteArticle() {
-    cy.getByTestId(DELETE_ARTICLE).first().click()
+    cy.getByTestId(DELETE_ARTICLE).first().click();
   }
 }
