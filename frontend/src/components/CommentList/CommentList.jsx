@@ -29,9 +29,11 @@ function CommentList({ triggerUpdate, updateComments }) {
   return comments?.length > 0 ? (
     comments.map(({ author, author: { username }, body, createdAt, id }) => {
       return (
-        <div className="card" key={id}>
+        <div data-testid={"comment-card"} className="card" key={id}>
           <div className="card-block">
-            <p data-testid={"comment-content"} className="card-text">{body}</p>
+            <p data-testid={"comment-content"} className="card-text">
+              {body}
+            </p>
           </div>
           <div className="card-footer">
             <CommentAuthor {...author} />

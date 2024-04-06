@@ -37,7 +37,7 @@ function Article() {
       </BannerContainer>
 
       <div className="container page">
-        <div className="row article-content">
+        <div data-testid={"article-content"} className="row article-content">
           <div className="col-md-12">
             {body && <Markdown options={{ forceBlock: true }}>{body}</Markdown>}
             <ArticleTags tagList={tagList} />
