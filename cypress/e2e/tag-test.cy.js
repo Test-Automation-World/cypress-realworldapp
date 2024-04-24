@@ -21,7 +21,7 @@ describe("Checking the tags", { tags: "@tags" }, () => {
       }
     });
 
-    it("Check that all popular tags are displayed", () => {
+    it("Should display all popular tags", () => {
       let front = [];
       TagsPage.getPopularTags().then((tags) => {
         front = tags.map((tag) => tag.toString().trim());
@@ -31,7 +31,7 @@ describe("Checking the tags", { tags: "@tags" }, () => {
       });
     });
 
-    it("Filter articles by tag", () => {
+    it("Should filter articles by tag", () => {
       cy.intercept("GET", "**/articles?tag=*").as("getArticlesByTag");
       TagsPage.getRandomTag().then((tagName) => {
         TagsPage.filterByTag(tagName);

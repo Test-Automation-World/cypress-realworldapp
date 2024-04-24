@@ -18,16 +18,20 @@ describe("Checking article detail page", { tags: "@articles" }, () => {
     ArticleDetailPage.visit();
   });
 
-  context("Test fav feature", { tags: "@sanity" }, () => {
+  context("Test fav feature", () => {
     before(() => {
       FavoritesApi.unfavoriteArticle();
     });
 
-    it("Give a like to an article", () => {
+    it("Should like an article", { tags: "@sanity" }, () => {
+      // Arrange
       cy.intercept("POST", "**/articles/*/favorite").as("postFavorite");
       GlobalFeedPage.getAmountOfLikes().then((amount) => {
+        // Act
         cy.giveLikeToAnArticle();
         cy.wait("@postFavorite").its("response.statusCode").should("eq", 200);
+
+        // Assert
         GlobalFeedPage.getAmountOfLikes().then((newAmount) => {
           expect(newAmount).to.eq(amount + 1);
         });
@@ -39,7 +43,7 @@ describe("Checking article detail page", { tags: "@articles" }, () => {
     before(() => {
       AuthorApi.unfollowAuthor(articleIndex);
     });
-    it("Start following an author", function () {
+    it("Should follow an author", function () {
       cy.wait(500);
       FollowAuthorButton.getFollowAuthorButton().as("followButton").click();
       cy.get("@followButton").should("contain.text", "Unfollow");
@@ -48,16 +52,21 @@ describe("Checking article detail page", { tags: "@articles" }, () => {
     });
   });
 
-  context(
-    "Test add comment feature",
-    { tags: ["@sanity", "@comments"] },
-    () => {
-      before(() => {
-        Comment.deleteArticleComments(articleIndex);
-      });
-      it("Add a comment to an article", () => {
+  context("Test add comment feature", () => {
+    before(() => {
+      Comment.deleteArticleComments(articleIndex);
+    });
+    it(
+      "Should add a comment to an article",
+      { tags: ["@sanity", "@comments"] },
+      () => {
+        // Arrange
         const message = faker.lorem.sentence();
+
+        // Act
         ArticleDetailPage.sendComment(message);
+
+        // Assert
         ArticleDetailPage.getCommentText()
           .invoke("text")
           .then((text) => {
@@ -68,34 +77,44 @@ describe("Checking article detail page", { tags: "@articles" }, () => {
           .then((text) => {
             expect(text.trim()).to.equal(Cypress.env("username"));
           });
-      });
-    }
-  );
+      }
+    );
+  });
 
-  context(
-    "Test delete comment feature",
-    { tags: ["@sanity", "@comments"] },
-    () => {
-      const message = faker.lorem.sentence();
-      before(() => {
-        Comment.addCommentToArticle(articleIndex, message);
-      });
-      it("Delete a comment of an article", () => {
+  context("Test delete comment feature", () => {
+    const message = faker.lorem.sentence();
+    before(() => {
+      Comment.addCommentToArticle(articleIndex, message);
+    });
+    it(
+      "Should delete a comment from an article",
+      { tags: ["@sanity", "@comments"] },
+      () => {
+        // Arrange
         cy.contains(message).should("exist");
-        ArticleDetailPage.deleteComment(message);
-        cy.contains(message).should("not.exist");
-      });
-    }
-  );
 
-  context("Test delete article feature", { tags: "@sanity" }, () => {
-    it("deletes an existing article", () => {
+        // Act
+        ArticleDetailPage.deleteComment(message);
+
+        // Assert
+        cy.contains(message).should("not.exist");
+      }
+    );
+  });
+
+  context("Test delete article feature", () => {
+    it("Should delete an article", { tags: "@sanity" }, () => {
+      // Arrange
       let newArticle = Utils.generateNewArticleData(false);
       cy.wait(500);
       ArticlesApi.createNewArticle(newArticle).then((slug) => {
         cy.visit(`/article/${slug}`);
       });
+
+      // Act
       ArticleDetailPage.deleteArticle();
+
+      // Assert
       cy.url().should("equal", Cypress.config().baseUrl + "/");
       GlobalFeedPage.goToGlobalFeed();
       GlobalFeedPage.getArticlesTitles().then((titles) => {

@@ -1,4 +1,4 @@
-export default class UserSettingsPage {
+export default class UserDetailsPage {
   static visit() {
     cy.visit(`/profile/${Cypress.env("username")}`);
   }

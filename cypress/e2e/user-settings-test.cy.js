@@ -24,7 +24,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
     UserSettingsPage.visit();
   });
 
-  it("updates url of profile picture", () => {
+  it("Should update user profile picture", () => {
     //Arrange
     cy.contains("Your Settings").should("be.visible");
 
@@ -33,6 +33,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
       UserSettingsFields.image,
       fieldsToUpdate.user.image
     );
+    UserSettingsPage.submitForm();
 
     //Assert
     UserSettingsPage.userPic()
@@ -40,7 +41,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
       .should("eq", fieldsToUpdate.user.image);
   });
 
-  it("updates username", () => {
+  it("Should update username", () => {
     //Arrange
     cy.intercept("PUT", "/api/user").as("updateUser");
 
@@ -49,6 +50,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
       UserSettingsFields.username,
       fieldsToUpdate.user.username
     );
+    UserSettingsPage.submitForm();
     cy.wait("@updateUser").then((user) => {
       //Assert
       expect(user.response.body.user.username, "User username").to.eq(
@@ -60,7 +62,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
       .should("have.text", fieldsToUpdate.user.username);
   });
 
-  it("updates user bio", () => {
+  it("Should update user bio", () => {
     //Arrange
     cy.intercept("PUT", "/api/user").as("updateUser");
 
@@ -69,6 +71,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
       UserSettingsFields.bio,
       fieldsToUpdate.user.bio
     );
+    UserSettingsPage.submitForm();
     cy.wait("@updateUser").then((user) => {
       //Assert
       expect(user.response.body.user.bio, "User bio").to.eq(
@@ -81,7 +84,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
     );
   });
 
-  it("updates email", { tags: "@sanity" }, () => {
+  it("Should update user email", { tags: "@sanity" }, () => {
     //Arrange
     const userNewEmail = fieldsToUpdate.user.email;
     const userPassword = newUserData.password;
@@ -89,6 +92,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
 
     //Act
     UserSettingsPage.updateField(UserSettingsFields.email, userNewEmail);
+    UserSettingsPage.submitForm();
     cy.wait("@updateUser");
 
     //Assert
@@ -101,7 +105,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
     );
   });
 
-  it("updates password", { tags: "@sanity" }, () => {
+  it("Should update user password", { tags: "@sanity" }, () => {
     //Arrange
     const userEmail = newUserData.email;
     const newPassword = fieldsToUpdate.user.password;
@@ -109,6 +113,7 @@ describe("user-settings-test", { tags: "@user" }, () => {
 
     //Act
     UserSettingsPage.updateField(UserSettingsFields.password, newPassword);
+    UserSettingsPage.submitForm();
     cy.wait("@updateUser");
 
     //Assert
@@ -116,12 +121,13 @@ describe("user-settings-test", { tags: "@user" }, () => {
     UserApi.getUser(userEmail, newPassword).then((user) => {
       expect(user.email, "User email").to.eq(userEmail);
     });
+    // If this assertion works ok in a real application, it would be a security risk
     UserSettingsPage.getField(UserSettingsFields.password)
       .invoke("val")
       .should("eq", newPassword);
   });
 
-  it("updates all fields at once", () => {
+  it("Should update all fields at once", () => {
     //Arrange
     const newUserData = fieldsToUpdate.user;
     cy.intercept("PUT", "/api/user").as("updateUser");

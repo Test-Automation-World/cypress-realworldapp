@@ -16,7 +16,7 @@ describe(
       cy.loginWithSession(Cypress.env("email"), Cypress.env("password"));
       NewArticlePage.visit();
     });
-    it("creates an article and redirects to article details", function () {
+    it("Should create a new article", function () {
       NewArticlePage.fillArticleForm(newArticle.article);
       NewArticlePage.publishArticle();
       //Yields article title from url and compares it to title in fixture after replacing spaces with dashes
@@ -30,7 +30,7 @@ describe(
         newArticle.article.tagList
       );
     });
-    it("edits an existing article", () => {
+    it("Should update an existing article", () => {
       const editedData = {
         title: " edited title",
         description: "Edited description",

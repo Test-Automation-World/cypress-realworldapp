@@ -45,7 +45,7 @@ Cypress.Commands.add('loginWithSession', (email, password) => {
         isAuth: true,
         loggedUser: user
       }
-      localStorage.setItem('loggedUser', JSON.stringify(userSession))
+      cy.window().its('localStorage').invoke('setItem', 'loggedUser', JSON.stringify(userSession))
     })
   })
 })

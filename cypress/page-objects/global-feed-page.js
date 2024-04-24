@@ -4,7 +4,12 @@ const FAV_BUTTON = 'fav-button'
 
 export default class GlobalFeedPage {
   static visit() {
+    cy.intercept('**/feed?limit**').as('getFeed')
     cy.visit('/')
+    cy.wait('@getFeed')
+    cy.intercept('**/articles?limit**').as('getArticles')
+    this.goToGlobalFeed()
+    cy.wait('@getArticles')
   }
 
   static goToGlobalFeed() {

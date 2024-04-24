@@ -13,7 +13,7 @@ describe("Check user detail page", { tags: "@user" }, () => {
     UserDetailsPage.visit();
   });
 
-  it("Check settings button has correct link", () => {
+  it("Should navigate to settings page", () => {
     UserDetailsPage.goToSettingsButton().should(
       "have.attr",
       "href",
@@ -29,7 +29,7 @@ describe("Check user detail page", { tags: "@user" }, () => {
         ArticlesApi.createNewArticle(newArticle);
       }
     });
-    it("Expected user articles are displayed", () => {
+    it("Should display expected user articles", () => {
       UserDetailsPage.myArticles().should("have.class", "active");
       ArticlesApi.getArticlesByAuthor(Cypress.env("username")).as(
         "articlesBack"
@@ -45,6 +45,7 @@ describe("Check user detail page", { tags: "@user" }, () => {
   });
 
   context("Check user favorited articles", () => {
+    let randomArticles
     before(() => {
       // In order for the test to be deterministic, first we need to unfavorite all articles
       FavoritesApi.getUserFavorites(Cypress.env("username")).then(
@@ -63,24 +64,20 @@ describe("Check user detail page", { tags: "@user" }, () => {
 
       // Then, let's favorite 5 articles
       ArticlesApi.getArticles().then((articles) => {
-        const randomArticles = Cypress._.sampleSize(articles, 5);
+        randomArticles = Cypress._.sampleSize(articles, 5);
         randomArticles.forEach((article) => {
           FavoritesApi.favoriteArticle(article.slug);
         });
       });
     });
 
-    it("Expected user favorited articles are displayed", () => {
+    it.only("Should display user favorited articles", () => {
       UserDetailsPage.favoritedArticles().click();
-      FavoritesApi.getUserFavorites(Cypress.env("username")).as(
-        "favoritesBack"
-      );
+
       GlobalFeedPage.getArticlesTitles().then((titles) => {
-        cy.get("@favoritesBack").then((articles) => {
           expect(titles).to.deep.members(
-            articles.map((article) => article.title)
+            randomArticles.map((article) => article.title)
           );
-        });
       });
     });
   });

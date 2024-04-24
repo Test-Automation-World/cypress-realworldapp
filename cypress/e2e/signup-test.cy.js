@@ -17,7 +17,7 @@ describe("Sign up feature", () => {
     });
   });
 
-  it("Should display error message for email already in use", () => {
+  it("Should display error message when registering with existing email", () => {
     cy.intercept("POST", "**/api/users").as("getUser");
     SignUpPage.fillForm({
       username: "testuser",

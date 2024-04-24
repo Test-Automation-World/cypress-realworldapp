@@ -10,8 +10,7 @@ describe("Testing global feed", { tags: "@articles" }, () => {
     cy.loginWithSession(Cypress.env("email"), Cypress.env("password"));
     GlobalFeed.visit();
   });
-  it("Check if all expected articles are displayed", () => {
-    GlobalFeed.goToGlobalFeed();
+  it("Should display expected articles", () => {
     Articles.getArticles().then((response) => {
       const titlesBack = response.map((article) => article.title);
       GlobalFeed.getArticlesTitles().then((titles) => {
@@ -23,14 +22,13 @@ describe("Testing global feed", { tags: "@articles" }, () => {
   });
 });
 
-describe("Like articles", { tags: "@articles" }, () => {
+describe("Fav feature", { tags: "@articles" }, () => {
   beforeEach(() => {
     cy.loginWithSession(Cypress.env("email"), Cypress.env("password"));
     FavoritesApi.unfavoriteArticle(0);
     GlobalFeed.visit();
   });
-  it("Give like to an article", () => {
-    GlobalFeed.goToGlobalFeed();
+  it("Should like an article", () => {
     cy.intercept("POST", "**/articles/**/favorite").as("postFavorite");
     GlobalFeed.getAmountOfLikes().then((amount) => {
       cy.giveLikeToAnArticle();
