@@ -71,7 +71,7 @@ describe("Check user detail page", { tags: "@user" }, () => {
       });
     });
 
-    it.only("Should display user favorited articles", () => {
+    it("Should display user favorited articles", () => {
       UserDetailsPage.favoritedArticles().click();
 
       GlobalFeedPage.getArticlesTitles().then((titles) => {
