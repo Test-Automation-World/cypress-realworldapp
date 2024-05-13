@@ -67,16 +67,9 @@ describe("Checking article detail page", { tags: "@articles" }, () => {
         ArticleDetailPage.sendComment(message);
 
         // Assert
-        ArticleDetailPage.getCommentText()
-          .invoke("text")
-          .then((text) => {
-            expect(text.trim()).to.equal(message);
-          });
-        ArticleDetailPage.getCommentAuthor()
-          .invoke("text")
-          .then((text) => {
-            expect(text.trim()).to.equal(Cypress.env("username"));
-          });
+        cy.contains(message).should("be.visible");
+
+        ArticleDetailPage.getCommentCardByText(message).find("[data-testid='author-username']").should("have.text", Cypress.env("username"));
       }
     );
   });
@@ -91,7 +84,7 @@ describe("Checking article detail page", { tags: "@articles" }, () => {
       { tags: ["@sanity", "@comments"] },
       () => {
         // Arrange
-        cy.contains(message).should("exist");
+        cy.contains(message).should("be.visible");
 
         // Act
         ArticleDetailPage.deleteComment(message);

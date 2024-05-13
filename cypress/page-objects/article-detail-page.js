@@ -3,6 +3,7 @@ import ArticlesApi from "../api-utils/article-api";
 // data-testId attributes
 const COMMENT_TEXTAREA = "comment-textarea";
 const POST_COMMENT_BUTTON = "post-comment";
+const COMMENT_CARD = "comment-card";
 const COMMENT_TEXT = "comment-content";
 const COMMENT_AUTHOR = "author-username";
 const DELETE_COMMENT_BUTTON = "delete-comment";
@@ -21,10 +22,16 @@ export default class ArticleDetailPage {
         cy.visit(`/article/${slug}`);
       });
   }
+
   static sendComment(comment) {
     cy.getByTestId(COMMENT_TEXTAREA).type(comment);
     cy.getByTestId(POST_COMMENT_BUTTON).click();
   }
+
+  static getCommentCardByText(commentText) {
+    return cy.getByTestId(COMMENT_CARD).filter(`:contains(${commentText})`);
+  }
+
   static getCommentText() {
     return cy.getByTestId(COMMENT_TEXT);
   }
@@ -34,8 +41,7 @@ export default class ArticleDetailPage {
   }
 
   static deleteComment(commentText) {
-    cy.getByTestId("comment-card")
-      .filter(`:contains(${commentText})`)
+    this.getCommentCardByText(commentText)
       .within(() => {
         cy.getByTestId(DELETE_COMMENT_BUTTON).click();
       });

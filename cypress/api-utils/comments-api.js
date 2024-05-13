@@ -29,13 +29,15 @@ static addCommentToArticle(articleIndex, comment) {
         slug = articles[articleIndex].slug
         this.getArticlesComments(slug).then(articles => {
           articles.forEach(comment => {
-            cy.request({
-              method: 'DELETE',
-              url: `${url}/articles/${slug}/comments/${comment.id}`,
-              headers: {
-                Authorization: 'Token ' + Cypress.env('token')
-              }
-            })
+            if (comment.author.username === Cypress.env('username')) {
+              cy.request({
+                method: 'DELETE',
+                url: `${url}/articles/${slug}/comments/${comment.id}`,
+                headers: {
+                  Authorization: 'Token ' + Cypress.env('token')
+                }
+              })
+            }
           })
         })
       })
