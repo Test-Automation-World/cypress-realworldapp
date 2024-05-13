@@ -42,11 +42,15 @@ This project utilizes Cypress for end-to-end testing of the web application. By 
 
 Once the app is running, you can run Cypress tests following these steps:
 
-1. If you run the app via docker-compose, don't forget to install dependencies first: `npm install`
-2. Run tests from the command line. In the root directory execute: `npm run cy:run`. This will execute all tests from the terminal
+1. Firstly, you need to register the test user in your local instance of the app with the following credentials:
+   - Username: `cypress-user`
+   - Email: `cypress@realworld.com`
+   - Password: `cypress@realworld.com`
+2. If you run the app via docker-compose, don't forget to install Cypress dependencies first: `npm install`
+3. Run tests from the command line. In the root directory execute: `npm run cy:run`. This will execute all tests from the terminal
    1. A library was added to add support for tagging tests and filter them when running the tests from console. More info bellow
-3. Run tests from Cypress runner interface. In the root directory execute: `npm run cy:open`. This will open a browser window, where you can choose which test to run
-4. Inside .github/workflows directory you can find a workflow file to run tests in parallel on Github Actions runners
+4. Run tests from Cypress runner interface. In the root directory execute: `npm run cy:open`. This will open a browser window, where you can choose which test to run
+5. Inside .github/workflows directory you can find a workflow file to run tests in parallel on Github Actions runners
 
 #### Additional libraries
 
