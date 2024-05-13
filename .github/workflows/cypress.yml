@@ -1,6 +1,9 @@
 name: Run Cypress tests
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -23,32 +26,27 @@ on:
         default: " "
 
 jobs:
-  test:
-    name: Spin up application to run tests
-
+  cypress-test:
     runs-on: ubuntu-latest
 
     # run 3 copies of the current job in parallel
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3]
+        containers: [1, 2, 3, 4]
 
     steps:
       - uses: actions/checkout@v3
 
-      # Paso 2: Iniciar contenedores con Docker Compose
-      - name: Iniciar contenedores
+      - name: Start application
         run: docker-compose up -d
 
-      # Paso 3: Esperar a que los contenedores estén listos
-      - name: Esperar a que los contenedores estén listos
+      - name: Wait for application to be ready
         run: |
           wget -O dockerize.tar.gz https://github.com/jwilder/dockerize/releases/download/v0.7.0/dockerize-alpine-linux-amd64-v0.7.0.tar.gz && tar -C /usr/local/bin -xzvf dockerize.tar.gz && rm dockerize.tar.gz
           dockerize -wait tcp://localhost:3000 -timeout 1m
 
-      # Paso 4: Ejecutar el script de sembrado de datos
-      - name: Ejecutar script de sembrado
+      - name: Run seed scripts
         run: docker-compose exec -T app npm run sqlz -- db:seed:all
 
       - name: Register cypress user
