@@ -1,60 +1,40 @@
-This project is a fork of [this one](https://github.com/TonyMckes/conduit-realworld-example-app), but customized to be used with test automation frameworks. That means that DOM elements have been added with the `data-testid` attribute, and the project can be run with docker-compose.
+## Project description
+The aim of this project is to showcase one way of creating an E2E test automation framework for [a web application](https://github.com/hugoguillin/realworld-app) using Cypress.
 
-### Usage
+### Main features
+- **Page Object Model**: design pattern to create a clear separation between the test code and the page code.
+- **Use of Cypress inside the project**: Cypress is installed as a dev dependency in the project, so you can run the tests directly from the project. This makes it easier to run the tests when you need to change some code in the application, specially in a CI/CD pipeline.
+- **Set up test data via API** to avoid flaky tests. See [example](cypress\e2e\user-details-test.cy.js#L47)
+- **Mock request responses** to avoid heavy test setup and to be able to test different scenarios. See [example](\cypress\e2e\author-detail-test.cy.js#L35).
+- **Reuse user authentication data between tests**. See [how to](cypress\support\commands.js#L36).
+- **Run tests in parallel in CI**. See [workflow](./.github/workflows/cypress.yml).
 
-To run the project, follow these steps:
+## How to run the tests
+### Prerequisites
+- Node.js
+- Docker
+- Docker Compose
 
-1. Start the development server by executing the command:
+### Run target application
+1. From the root directory of this project, run `docker-compose up -d` to start the target application on `http://localhost:3000`.
+2. Seed the database with some data by running `docker-compose exec app npm run sqlz -- db:seed:all`.
+3. Register a new user with the credentials listed in the [Cypress config file](cypress.config.js#L39) file. If you have `curl` installed, you can run the following command:
+    ```bash
+    curl -X POST 'http://localhost:3000/api/users' -H 'Content-Type: application/json' -d '{"user": {"username": "cypress-user","email": "cypress@realworld.com","password": "cypress@realworld.com"}}'
+    ```
 
-   ```bash
-   docker-compose up
-   ```
+### Run tests
+First, install the project dependencies by running `npm install` from the root directory of this project.
 
-2. Open a web browser and navigate to:
-   - Home page should be available at [`http://localhost:3000/`](http://localhost:3000).
-   - API endpoints should be available at [`http://localhost:3001/api`](http://localhost:3001/api).
+Then, you can run the tests in your local machine in different ways:
+- From Cypress UI test runner: `npm run cy:open`
+- From terminal: `npm run cy:run`
 
-#### Development Server
-
-As described in the original project, you can run the development server like this:
-
-1. Create a `.env` file in the `backend` directory with the same content as the `.env.example` file. You can customize the values if you want.
-2. Install dependencies with `npm install`.
-3. You need an instance of a database running. The easiest way is to use a docker container. Run the following command to start a PostgreSQL database:
-
-   ```bash
-   docker run --name realworldapp-db -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
-   ```
-
-4. Create the database. You can run the following command from the root directory of the project:
-
-   ```bash
-   npm run sqlz -- db:create
-   ```
-
-5. Start the development server with `npm run dev`.
-6. Open a web browser and navigate to [`http://localhost:3000/`](http://localhost:3000).
-7. Optionally, you can populate the database with `npm run sqlz -- db:seed:all`.
-
-### Cypress
-
-This project utilizes Cypress for end-to-end testing of the web application. By integrating Cypress directly into the project, you benefit from seamless testing workflows and it's easier to run the tests when you need to change some code in the application
-
-Once the app is running, you can run Cypress tests following these steps:
-
-1. Firstly, you need to register the test user in your local instance of the app with the following credentials:
-   - Username: `cypress-user`
-   - Email: `cypress@realworld.com`
-   - Password: `cypress@realworld.com`
-2. If you run the app via docker-compose, don't forget to install Cypress dependencies first: `npm install`
-3. Run tests from the command line. In the root directory execute: `npm run cy:run`. This will execute all tests from the terminal
-   1. A library was added to add support for tagging tests and filter them when running the tests from console. More info bellow
-4. Run tests from Cypress runner interface. In the root directory execute: `npm run cy:open`. This will open a browser window, where you can choose which test to run
-5. Inside .github/workflows directory you can find a workflow file to run tests in parallel on Github Actions runners
+You can also run the tests in parallel in CI from the project's [Github Actions section](https://github.com/hugoguillin/cypress-realworldapp/actions/workflows/cypress.yml) or creating a pull request.
 
 #### Additional libraries
 
-- [@cypress/grep](https://github.com/cypress-io/cypress/tree/develop/npm/grep#cypressgrep): Tag tests and filter them when running them from console: `npm run cy:run -- --env grepTags=@sanity`
+- [@cypress/grep](https://github.com/cypress-io/cypress/tree/develop/npm/grep#cypressgrep): Filter tests by tags: `npm run cy:run -- --env grepTags=@sanity`
 - [@faker-js/faker](https://fakerjs.dev/guide/)
 - [cypress-map](https://github.com/bahmutov/cypress-map)
 - [cypress-mochawesome-reporter](https://www.npmjs.com/package/cypress-mochawesome-reporter)
