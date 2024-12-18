@@ -11,13 +11,7 @@ export default class AuthorDetailPage {
     })
   }
   static getArticlesTitles() {
-    return cy.getByTestId(ARTICLE_TITLE).then(article => {
-      return article
-        .map((_index, title) => {
-          return title.textContent
-        })
-        .get() //This get transforms the JQuery object's array returned by map method into an array of strings
-    })
+    return cy.getByTestId(ARTICLE_TITLE).map("textContent")
   }
   static showFavoritedPosts() {
     cy.contains('Favorited Articles').click()

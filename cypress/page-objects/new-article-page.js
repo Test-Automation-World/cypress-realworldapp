@@ -16,9 +16,7 @@ export default class NewArticlePage {
     cy.getByTestId(TITLE).type(newArticle.title)
     cy.getByTestId(DESCRIPTION).type(newArticle.description)
     cy.getByTestId(BODY).type(newArticle.body, { delay: 0 })
-    newArticle.tagList.forEach(tag => {
-      cy.getByTestId(TAGS).type(tag + ' ')
-    })
+    Cypress._.each(newArticle.tagList, tag => cy.getByTestId(TAGS).type(tag + ' '))
   }
   static publishArticle() {
     cy.getByTestId(SUBMIT_BUTTON).click()
