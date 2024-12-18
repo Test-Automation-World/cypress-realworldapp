@@ -4,7 +4,7 @@ export default class Utils {
   static generateNewArticleData(includeTags = true) {
     let tagList = []
     if (includeTags) {
-      tagList = [faker.lorem.word(), faker.lorem.word()]
+      tagList = [faker.lorem.word(), faker.lorem.word(), faker.lorem.word()]
     }
     return {
       article: {

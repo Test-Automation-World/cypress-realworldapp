@@ -48,9 +48,7 @@ export default class ArticleDetailPage {
   }
 
   static getArticleTags() {
-    return cy.getByTestId(TAG_PILLS).then((tagList) => {
-      return tagList.map((_t, e) => e.textContent.trim()).get();
-    });
+    return cy.getByTestId(TAG_PILLS).map("textContent").mapInvoke("trim");
   }
 
   static getArticleBody() {

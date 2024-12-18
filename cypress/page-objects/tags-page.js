@@ -9,8 +9,8 @@ export default class TagsPage {
   }
   static getPopularTags() {
     return this.getTag()
-      .invoke("toArray")
-      .then((tags) => cy.wrap(tags.map((tag) => tag.textContent)));
+      .map('textContent')
+      .mapInvoke('trim');
   }
 
   static filterByTag(tagName = "") {

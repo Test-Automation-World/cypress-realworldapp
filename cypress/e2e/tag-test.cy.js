@@ -22,12 +22,10 @@ describe("Checking the tags", { tags: "@tags" }, () => {
     });
 
     it("Should display all popular tags", () => {
-      let front = [];
-      TagsPage.getPopularTags().then((tags) => {
-        front = tags.map((tag) => tag.toString().trim());
-      });
-      TagsApi.getPopularTags().should((tagsBack) => {
-        expect(tagsBack).to.contain.members(front);
+      TagsPage.getPopularTags().then((tagsFront) => {
+        TagsApi.getPopularTags().should((tagsBack) => {
+          expect(tagsBack).to.contain.members(tagsFront);
+        })
       });
     });
 

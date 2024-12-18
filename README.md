@@ -16,8 +16,8 @@ The aim of this project is to showcase one way of creating an E2E test automatio
 - Docker Compose
 
 ### Run target application
-1. From the root directory of this project, run `docker-compose up -d` to start the target application on `http://localhost:3000`.
-2. Seed the database with some data by running `docker-compose exec app npm run sqlz -- db:seed:all`.
+1. From the root directory of this project, run `docker compose up -d` to start the target application on `http://localhost:3000`.
+2. Seed the database with some data by running `docker compose exec app npm run sqlz -- db:seed:all`.
 3. Register a new user with the credentials listed in the [Cypress config file](cypress.config.js#L39) file. If you have `curl` installed, you can run the following command:
     ```bash
     curl -X POST 'http://localhost:3000/api/users' -H 'Content-Type: application/json' -d '{"user": {"username": "cypress-user","email": "cypress@realworld.com","password": "cypress@realworld.com"}}'
